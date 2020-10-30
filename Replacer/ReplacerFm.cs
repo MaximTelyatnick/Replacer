@@ -120,6 +120,7 @@ namespace Replacer
             cells.Replace("М", "M", LookAt.Part, SearchOrder.ByRows, true);
             //cells.Replace("т", "t", LookAt.Part, SearchOrder.ByRows, true);
             cells.Replace("Т", "T", LookAt.Part, SearchOrder.ByRows, true);
+            cells.Replace("Т", "T", LookAt.Part, SearchOrder.ByRows, true);
 
             try
             {
