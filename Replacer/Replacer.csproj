@@ -21,12 +21,13 @@
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
+    <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <TargetCulture>ru-RU</TargetCulture>
     <ProductName>Replacer</ProductName>
     <PublisherName>Maxim T</PublisherName>
-    <ApplicationRevision>9</ApplicationRevision>
+    <MinimumRequiredVersion>2.0.0.14</MinimumRequiredVersion>
+    <ApplicationRevision>15</ApplicationRevision>
     <ApplicationVersion>2.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -200,6 +201,19 @@
     <Compile Include="ReplacerFm.Designer.cs">
       <DependentUpon>ReplacerFm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ReplaceString.cs" />
+    <Compile Include="ReplaceStringFm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReplaceStringFm.Designer.cs">
+      <DependentUpon>ReplaceStringFm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WaitFm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WaitFm.Designer.cs">
+      <DependentUpon>WaitFm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -213,6 +227,12 @@
     </Compile>
     <EmbeddedResource Include="ReplacerFm.resx">
       <DependentUpon>ReplacerFm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReplaceStringFm.resx">
+      <DependentUpon>ReplaceStringFm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WaitFm.resx">
+      <DependentUpon>WaitFm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />

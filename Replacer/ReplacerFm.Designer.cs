@@ -29,26 +29,34 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.XtraEditors.DXErrorProvider.ConditionValidationRule conditionValidationRule2 = new DevExpress.XtraEditors.DXErrorProvider.ConditionValidationRule();
+            DevExpress.XtraEditors.DXErrorProvider.ConditionValidationRule conditionValidationRule1 = new DevExpress.XtraEditors.DXErrorProvider.ConditionValidationRule();
+            this.splashScreenManager = new DevExpress.XtraSplashScreen.SplashScreenManager(this, typeof(global::TechnicalProcessControl.WaitFm), true, true);
             this.startBtn = new DevExpress.XtraEditors.SimpleButton();
             this.searchPathToDirectoryBtn = new DevExpress.XtraEditors.SimpleButton();
             this.pathToDirectoryEdit = new DevExpress.XtraEditors.TextEdit();
             this.filesGrid = new DevExpress.XtraGrid.GridControl();
             this.filesGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.pathCol = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridColumn1 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.charSearchCol = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.stringSearchCol = new DevExpress.XtraGrid.Columns.GridColumn();
             this.updateProgress = new DevExpress.XtraEditors.ProgressBarControl();
             this.progressLbl = new DevExpress.XtraEditors.LabelControl();
             this.dxValidationProvider = new DevExpress.XtraEditors.DXErrorProvider.DXValidationProvider(this.components);
             this.markBtn = new DevExpress.XtraEditors.SimpleButton();
             this.searchChar = new DevExpress.XtraEditors.SimpleButton();
             this.disableMarkBtn = new DevExpress.XtraEditors.SimpleButton();
+            this.replaceStringBtn = new DevExpress.XtraEditors.SimpleButton();
+            this.searchStringBtn = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.pathToDirectoryEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.filesGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.filesGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.updateProgress.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxValidationProvider)).BeginInit();
             this.SuspendLayout();
+            // 
+            // splashScreenManager
+            // 
+            this.splashScreenManager.ClosingDelay = 500;
             // 
             // startBtn
             // 
@@ -59,7 +67,7 @@
             this.startBtn.Name = "startBtn";
             this.startBtn.Size = new System.Drawing.Size(112, 22);
             this.startBtn.TabIndex = 2;
-            this.startBtn.Text = "Заменить";
+            this.startBtn.Text = "Заменить символы";
             this.startBtn.Click += new System.EventHandler(this.startBtn_Click);
             // 
             // searchPathToDirectoryBtn
@@ -67,7 +75,7 @@
             this.searchPathToDirectoryBtn.Appearance.BackColor = System.Drawing.Color.DarkSeaGreen;
             this.searchPathToDirectoryBtn.Appearance.Options.UseBackColor = true;
             this.searchPathToDirectoryBtn.ButtonStyle = DevExpress.XtraEditors.Controls.BorderStyles.HotFlat;
-            this.searchPathToDirectoryBtn.Location = new System.Drawing.Point(572, 323);
+            this.searchPathToDirectoryBtn.Location = new System.Drawing.Point(839, 323);
             this.searchPathToDirectoryBtn.Name = "searchPathToDirectoryBtn";
             this.searchPathToDirectoryBtn.Size = new System.Drawing.Size(76, 22);
             this.searchPathToDirectoryBtn.TabIndex = 3;
@@ -78,12 +86,12 @@
             // 
             this.pathToDirectoryEdit.Location = new System.Drawing.Point(12, 259);
             this.pathToDirectoryEdit.Name = "pathToDirectoryEdit";
-            this.pathToDirectoryEdit.Size = new System.Drawing.Size(636, 20);
+            this.pathToDirectoryEdit.Size = new System.Drawing.Size(903, 20);
             this.pathToDirectoryEdit.TabIndex = 4;
-            conditionValidationRule2.ConditionOperator = DevExpress.XtraEditors.DXErrorProvider.ConditionOperator.IsNotBlank;
-            conditionValidationRule2.ErrorText = "Не указано путь к директории";
-            conditionValidationRule2.ErrorType = DevExpress.XtraEditors.DXErrorProvider.ErrorType.Critical;
-            this.dxValidationProvider.SetValidationRule(this.pathToDirectoryEdit, conditionValidationRule2);
+            conditionValidationRule1.ConditionOperator = DevExpress.XtraEditors.DXErrorProvider.ConditionOperator.IsNotBlank;
+            conditionValidationRule1.ErrorText = "Не указано путь к директории";
+            conditionValidationRule1.ErrorType = DevExpress.XtraEditors.DXErrorProvider.ErrorType.Critical;
+            this.dxValidationProvider.SetValidationRule(this.pathToDirectoryEdit, conditionValidationRule1);
             this.pathToDirectoryEdit.EditValueChanged += new System.EventHandler(this.pathToDirectoryEdit_EditValueChanged);
             // 
             // filesGrid
@@ -91,7 +99,7 @@
             this.filesGrid.Location = new System.Drawing.Point(12, 12);
             this.filesGrid.MainView = this.filesGridView;
             this.filesGrid.Name = "filesGrid";
-            this.filesGrid.Size = new System.Drawing.Size(636, 241);
+            this.filesGrid.Size = new System.Drawing.Size(903, 241);
             this.filesGrid.TabIndex = 5;
             this.filesGrid.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.filesGridView});
@@ -100,7 +108,8 @@
             // 
             this.filesGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.pathCol,
-            this.gridColumn1});
+            this.charSearchCol,
+            this.stringSearchCol});
             this.filesGridView.GridControl = this.filesGrid;
             this.filesGridView.Name = "filesGridView";
             this.filesGridView.DoubleClick += new System.EventHandler(this.filesGridView_DoubleClick);
@@ -116,16 +125,26 @@
             this.pathCol.VisibleIndex = 0;
             this.pathCol.Width = 503;
             // 
-            // gridColumn1
+            // charSearchCol
             // 
-            this.gridColumn1.Caption = "Наличие символов";
-            this.gridColumn1.FieldName = "Check";
-            this.gridColumn1.Name = "gridColumn1";
-            this.gridColumn1.OptionsColumn.AllowEdit = false;
-            this.gridColumn1.OptionsColumn.AllowFocus = false;
-            this.gridColumn1.Visible = true;
-            this.gridColumn1.VisibleIndex = 1;
-            this.gridColumn1.Width = 115;
+            this.charSearchCol.Caption = "Наличие символов";
+            this.charSearchCol.FieldName = "Check";
+            this.charSearchCol.Name = "charSearchCol";
+            this.charSearchCol.OptionsColumn.AllowEdit = false;
+            this.charSearchCol.OptionsColumn.AllowFocus = false;
+            this.charSearchCol.Visible = true;
+            this.charSearchCol.VisibleIndex = 1;
+            this.charSearchCol.Width = 115;
+            // 
+            // stringSearchCol
+            // 
+            this.stringSearchCol.Caption = "Наличие строки";
+            this.stringSearchCol.FieldName = "CheckString";
+            this.stringSearchCol.Name = "stringSearchCol";
+            this.stringSearchCol.OptionsColumn.AllowEdit = false;
+            this.stringSearchCol.OptionsColumn.AllowFocus = false;
+            this.stringSearchCol.Visible = true;
+            this.stringSearchCol.VisibleIndex = 2;
             // 
             // updateProgress
             // 
@@ -133,7 +152,7 @@
             this.updateProgress.Name = "updateProgress";
             this.updateProgress.Properties.ProgressViewStyle = DevExpress.XtraEditors.Controls.ProgressViewStyle.Solid;
             this.updateProgress.Properties.TextOrientation = DevExpress.Utils.Drawing.TextOrientation.Horizontal;
-            this.updateProgress.Size = new System.Drawing.Size(636, 32);
+            this.updateProgress.Size = new System.Drawing.Size(903, 32);
             this.updateProgress.TabIndex = 6;
             // 
             // progressLbl
@@ -181,8 +200,8 @@
             // 
             // disableMarkBtn
             // 
-            this.disableMarkBtn.Appearance.BackColor = System.Drawing.Color.SeaShell;
-            this.disableMarkBtn.Appearance.BackColor2 = System.Drawing.Color.SeaShell;
+            this.disableMarkBtn.Appearance.BackColor = System.Drawing.Color.White;
+            this.disableMarkBtn.Appearance.BackColor2 = System.Drawing.Color.White;
             this.disableMarkBtn.Appearance.ForeColor = System.Drawing.Color.Black;
             this.disableMarkBtn.Appearance.Options.UseBackColor = true;
             this.disableMarkBtn.Appearance.Options.UseForeColor = true;
@@ -194,11 +213,45 @@
             this.disableMarkBtn.Text = "Убрать метки";
             this.disableMarkBtn.Click += new System.EventHandler(this.disableMarkBtn_Click);
             // 
+            // replaceStringBtn
+            // 
+            this.replaceStringBtn.Appearance.BackColor = System.Drawing.Color.LightBlue;
+            this.replaceStringBtn.Appearance.Options.UseBackColor = true;
+            this.replaceStringBtn.Appearance.Options.UseForeColor = true;
+            this.replaceStringBtn.AppearanceDisabled.BackColor = System.Drawing.Color.Snow;
+            this.replaceStringBtn.AppearanceDisabled.Options.UseBackColor = true;
+            this.replaceStringBtn.ButtonStyle = DevExpress.XtraEditors.Controls.BorderStyles.HotFlat;
+            this.replaceStringBtn.Location = new System.Drawing.Point(650, 323);
+            this.replaceStringBtn.Name = "replaceStringBtn";
+            this.replaceStringBtn.Size = new System.Drawing.Size(156, 22);
+            this.replaceStringBtn.TabIndex = 11;
+            this.replaceStringBtn.Text = "Заменить строку и отметить";
+            this.replaceStringBtn.Click += new System.EventHandler(this.replaceStringBtn_Click);
+            // 
+            // searchStringBtn
+            // 
+            this.searchStringBtn.Appearance.BackColor = System.Drawing.Color.LightBlue;
+            this.searchStringBtn.Appearance.BackColor2 = System.Drawing.Color.LightBlue;
+            this.searchStringBtn.Appearance.ForeColor = System.Drawing.Color.Black;
+            this.searchStringBtn.Appearance.Options.UseBackColor = true;
+            this.searchStringBtn.Appearance.Options.UseForeColor = true;
+            this.searchStringBtn.AppearanceDisabled.BackColor = System.Drawing.Color.Snow;
+            this.searchStringBtn.AppearanceDisabled.Options.UseBackColor = true;
+            this.searchStringBtn.ButtonStyle = DevExpress.XtraEditors.Controls.BorderStyles.HotFlat;
+            this.searchStringBtn.Location = new System.Drawing.Point(523, 323);
+            this.searchStringBtn.Name = "searchStringBtn";
+            this.searchStringBtn.Size = new System.Drawing.Size(121, 22);
+            this.searchStringBtn.TabIndex = 12;
+            this.searchStringBtn.Text = "Найти строку ";
+            this.searchStringBtn.Click += new System.EventHandler(this.searchStringBtn_Click);
+            // 
             // ReplacerFm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(660, 357);
+            this.ClientSize = new System.Drawing.Size(927, 357);
+            this.Controls.Add(this.searchStringBtn);
+            this.Controls.Add(this.replaceStringBtn);
             this.Controls.Add(this.disableMarkBtn);
             this.Controls.Add(this.searchChar);
             this.Controls.Add(this.markBtn);
@@ -215,6 +268,7 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Replacer";
+            this.Load += new System.EventHandler(this.ReplacerFm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pathToDirectoryEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.filesGrid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.filesGridView)).EndInit();
@@ -237,8 +291,12 @@
         private DevExpress.XtraEditors.DXErrorProvider.DXValidationProvider dxValidationProvider;
         private DevExpress.XtraEditors.SimpleButton markBtn;
         private DevExpress.XtraGrid.Columns.GridColumn pathCol;
-        private DevExpress.XtraGrid.Columns.GridColumn gridColumn1;
+        private DevExpress.XtraGrid.Columns.GridColumn charSearchCol;
         private DevExpress.XtraEditors.SimpleButton searchChar;
         private DevExpress.XtraEditors.SimpleButton disableMarkBtn;
+        private DevExpress.XtraSplashScreen.SplashScreenManager splashScreenManager;
+        private DevExpress.XtraGrid.Columns.GridColumn stringSearchCol;
+        private DevExpress.XtraEditors.SimpleButton replaceStringBtn;
+        private DevExpress.XtraEditors.SimpleButton searchStringBtn;
     }
 }

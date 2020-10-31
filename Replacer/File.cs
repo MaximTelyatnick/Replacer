@@ -10,11 +10,13 @@ namespace Replacer
     {
         public string Path { get; set; }
         public bool Check { get; set; }
+        public bool CheckString { get; set; }
 
 
         public File()
         {
             Check = false;
+            CheckString = false;
         }
     }
 }
