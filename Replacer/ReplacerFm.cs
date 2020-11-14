@@ -21,11 +21,16 @@ namespace Replacer
     public partial class ReplacerFm : DevExpress.XtraEditors.XtraForm
     {
         public List<File> PathToDirectory = new List<File>();
+        public List<File> PathToDirectoryAllFiles = new List<File>();
+
         public List<string> pathToExcelFile = new List<string>();
         public DevExpress.Spreadsheet.IWorkbook workbook;
         public Worksheet worksheet;
         public SpreadsheetControl spreadsheetControl = new SpreadsheetControl();
+
         public BindingSource filesBS = new BindingSource();
+        public BindingSource filesPathBS = new BindingSource();
+
         public string pathToDirectory;
         
 
@@ -83,6 +88,42 @@ namespace Replacer
             }
         }
 
+        public void LoadAllFiles()
+        {
+            if (!pathToDirectoryAllFilesEdit.Text.Equals(String.Empty) && System.IO.Directory.Exists(pathToDirectoryEdit.Text))
+            {
+                if (System.IO.Directory.GetFiles(pathToDirectoryAllFilesEdit.Text).Length > 0)
+                {
+
+                    List<string> files = Directory.GetFiles(pathToDirectoryAllFilesEdit.Text, "*.*", SearchOption.AllDirectories)
+                        .ToList();
+
+                    foreach (string file in files)
+                    {
+                        PathToDirectoryAllFiles.Add(new File() { Path = file });
+                    }
+
+                    LoadDataAlFiles();
+
+
+                }
+                else
+                {
+                    filesPathGridView.PostEditor();
+                    filesPathGridView.BeginDataUpdate();
+                    filesPathGrid.DataSource = null;
+                    filesPathGridView.EndDataUpdate();
+                }
+            }
+            else
+            {
+                filesPathGridView.PostEditor();
+                filesPathGridView.BeginDataUpdate();
+                filesPathGrid.DataSource = null;
+                filesPathGridView.EndDataUpdate();
+            }
+        }
+
         private void searchPathToDirectoryBtn_Click(object sender, EventArgs e)
         {
             PathToDirectory.Clear();
@@ -107,6 +148,15 @@ namespace Replacer
             filesBS.DataSource = PathToDirectory;
             filesGrid.DataSource = filesBS;
             filesGridView.EndDataUpdate();
+        }
+
+        public void LoadDataAlFiles()
+        {
+            filesPathGridView.PostEditor();
+            filesPathGridView.BeginDataUpdate();
+            filesPathBS.DataSource = PathToDirectoryAllFiles;
+            filesPathGrid.DataSource = filesPathBS;
+            filesPathGridView.EndDataUpdate();
         }
 
         public bool ReplaceSymbol(string data)
@@ -169,6 +219,7 @@ namespace Replacer
 
             if (PathToDirectory.Count > 0)
             {
+                ActiveButton(false);
                 progressLbl.Text = "Происходит замена данных";
                 progressLbl.Refresh();
 
@@ -187,12 +238,15 @@ namespace Replacer
 
                 progressLbl.Text = "Данные обновлены";
                 progressLbl.Refresh();
+                ActiveButton(true);
             }
             else
             {
                 MessageBox.Show("Не найдено файлы в папке!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
+
+
 
         private void dxValidationProvider_ValidationFailed(object sender, DevExpress.XtraEditors.DXErrorProvider.ValidationFailedEventArgs e)
         {
@@ -228,6 +282,7 @@ namespace Replacer
             if (PathToDirectory.Count > 0)
             {
                 ClearCheck();
+                ActiveButton(false);
 
                 progressLbl.Text = "Происходит поиск символов";
                 progressLbl.Refresh();
@@ -257,6 +312,7 @@ namespace Replacer
 
                 progressLbl.Text = "Данные обновлены";
                 progressLbl.Refresh();
+                ActiveButton(true);
             }
             else
             {
@@ -264,61 +320,18 @@ namespace Replacer
             }
         }
 
-        //public bool ReplaceString(string data, bool mark = true)
-        //{
-        //    bool searchChar = false;
-        //    DevExpress.Spreadsheet.IWorkbook workbook;
-        //    Worksheet worksheet;
-        //    workbook = spreadsheetControl.Document;
-        //    try
-        //    {
-        //        workbook.LoadDocument(data);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return true;
-        //    }
 
-        //    worksheet = workbook.Worksheets[0];
-        //    //workbookk.LoadDocument(data);
-
-        //    char[] alphabet = Enumerable.Range('а', 35).Select(x => (char)x).ToArray();
-        //    alphabet[32] = 'і';
-        //    alphabet[33] = 'ї';
-        //    alphabet[34] = 'є';
-
-        //    SearchOptions options = new SearchOptions();
-        //    options.SearchBy = SearchBy.Rows;
-        //    options.SearchIn = SearchIn.Values;
-        //    options.MatchEntireCellContents = false;
-        //    options.MatchCase = false;
-
-        //    foreach (var item in alphabet)
-        //    {
-        //        IEnumerable<Cell> searchResult = worksheet.Search(item.ToString(), options);
-        //        foreach (Cell cell in searchResult)
-        //        {
-        //            if (mark)
-        //                cell.Fill.BackgroundColor = Color.Bisque;
-        //        }
-
-        //        if (searchResult.Count() > 0)
-        //            searchChar = true;
-
-        //        try
-        //        {
-        //            workbook.SaveDocument(data);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show("Файл: " + data + ". Не был отредактирован так как открыт в проводнике", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //            break;
-        //        }
-
-        //    }
-
-        //    return searchChar;
-        //}
+        public void  ActiveButton(bool active)
+        {
+            searchChar.Enabled = active;
+            markBtn.Enabled = active;
+            disableMarkBtn.Enabled = active;
+            startBtn.Enabled = active;
+            searchStringBtn.Enabled = active;
+            replaceStringBtn.Enabled = active;
+            searchCharAllFilesBtn.Enabled = active;
+            startAllFilesBtn.Enabled = active;
+        }
 
 
         public bool SearchRussianChar(string data, bool mark = true)
@@ -339,10 +352,10 @@ namespace Replacer
             worksheet = workbook.Worksheets[0];
             //workbookk.LoadDocument(data);
 
-            char[] alphabet = Enumerable.Range('а', 35).Select(x => (char)x).ToArray();
-            alphabet[32] = 'і';
-            alphabet[33] = 'ї';
-            alphabet[34] = 'є';
+            char[] alphabet = Enumerable.Range('а', 37).Select(x => (char)x).ToArray();
+            alphabet[34] = 'і';
+            alphabet[35] = 'ї';
+            alphabet[36] = 'є';
 
             SearchOptions options = new SearchOptions();
             options.SearchBy = SearchBy.Rows;
@@ -362,16 +375,64 @@ namespace Replacer
                 if (searchResult.Count() > 0)
                     searchChar = true;
 
-                try
-                {
-                    workbook.SaveDocument(data);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Файл: "+ data + ". Не был отредактирован так как открыт в проводнике", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    break;
-                }
                 
+                
+            }
+
+            try
+            {
+                workbook.SaveDocument(data);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Файл: " + data + ". Не был отредактирован так как открыт в проводнике", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            return searchChar;
+        }
+
+        public bool SearchRussianCharInPath(string data, bool mark = true)
+        {
+            bool searchChar = false;
+
+            //workbookk.LoadDocument(data);
+
+            char[] alphabet = Enumerable.Range('а', 37).Select(x => (char)x).ToArray();
+            alphabet[34] = 'і';
+            alphabet[35] = 'ї';
+            alphabet[36] = 'є';
+
+            SearchOptions options = new SearchOptions();
+            options.SearchBy = SearchBy.Rows;
+            options.SearchIn = SearchIn.Values;
+            options.MatchEntireCellContents = false;
+            options.MatchCase = false;
+
+            foreach (var item in alphabet)
+            {
+                IEnumerable<Cell> searchResult = worksheet.Search(item.ToString(), options);
+                foreach (Cell cell in searchResult)
+                {
+                    if (mark)
+                        cell.Fill.BackgroundColor = Color.Bisque;
+                }
+
+                if (searchResult.Count() > 0)
+                    searchChar = true;
+
+
+
+            }
+
+            try
+            {
+                workbook.SaveDocument(data);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Файл: " + data + ". Не был отредактирован так как открыт в проводнике", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
             }
 
             return searchChar;
@@ -488,6 +549,11 @@ namespace Replacer
             {
                 item.Check = false;
             }
+
+            foreach (var item in PathToDirectoryAllFiles)
+            {
+                item.Check = false;
+            }
         }
 
         public void ClearCheckString()
@@ -504,6 +570,7 @@ namespace Replacer
             if (PathToDirectory.Count > 0)
             {
                 ClearCheck();
+                ActiveButton(false);
 
 
                 progressLbl.Text = "Происходит поиск символов";
@@ -528,6 +595,8 @@ namespace Replacer
 
                 progressLbl.Text = "Символы найдены";
                 progressLbl.Refresh();
+                ActiveButton(true);
+
             }
             else
             {
@@ -539,6 +608,8 @@ namespace Replacer
         {
             if (PathToDirectory.Count > 0)
             {
+                ActiveButton(false);
+
                 progressLbl.Text = "Убираем метки";
                 progressLbl.Refresh();
 
@@ -561,6 +632,7 @@ namespace Replacer
 
                 progressLbl.Text = "Метки убраны";
                 progressLbl.Refresh();
+                ActiveButton(true);
             }
             else
             {
@@ -573,6 +645,7 @@ namespace Replacer
             if (PathToDirectory.Count > 0)
             {
                 ClearCheckString();
+                ActiveButton(false);
 
 
                 ReplaceString replaceStringModel = new ReplaceString();
@@ -585,6 +658,7 @@ namespace Replacer
                     }
                     else
                     {
+                        ActiveButton(true);
                         return;
 
                     }
@@ -614,6 +688,7 @@ namespace Replacer
 
                 progressLbl.Text = "Замена произведена, ячейки где была выполнена замена - отмечены";
                 progressLbl.Refresh();
+                ActiveButton(true);
 
             }
             else
@@ -646,7 +721,7 @@ namespace Replacer
             options.SearchBy = SearchBy.Rows;
             options.SearchIn = SearchIn.Values;
             options.MatchEntireCellContents = false;
-            options.MatchCase = true;
+            options.MatchCase = false;
             
 
             IEnumerable<Cell> searchResult = worksheet.Search(searchString, options);
@@ -701,7 +776,7 @@ namespace Replacer
             options.SearchBy = SearchBy.Rows;
             options.SearchIn = SearchIn.Values;
             options.MatchEntireCellContents = false;
-            options.MatchCase = true;
+            options.MatchCase = false;
 
 
             IEnumerable<Cell> searchResult = worksheet.Search(searchString, options);
@@ -731,6 +806,7 @@ namespace Replacer
             if (PathToDirectory.Count > 0)
             {
                 ClearCheckString();
+                ActiveButton(false);
 
 
                 ReplaceString replaceStringModel = new ReplaceString();
@@ -772,6 +848,7 @@ namespace Replacer
 
                 progressLbl.Text = "Поиск завершен, ячейки где был найден текст - отмечены";
                 progressLbl.Refresh();
+                ActiveButton(true);
 
             }
             else
@@ -780,6 +857,58 @@ namespace Replacer
             }
         }
 
-        
+        private void searchPathToDirectoryFilesBtn_Click(object sender, EventArgs e)
+        {
+
+            FolderBrowserDialog folderBrowserDlg = new FolderBrowserDialog();
+            folderBrowserDlg.ShowNewFolderButton = true;
+            DialogResult dlgResult = folderBrowserDlg.ShowDialog();
+            if (dlgResult.Equals(DialogResult.OK))
+            {
+                pathToDirectoryAllFilesEdit.Text = folderBrowserDlg.SelectedPath;
+                Environment.SpecialFolder rootFolder = folderBrowserDlg.RootFolder;
+
+                LoadAllFiles();
+            }
+        }
+
+        private void searchCharAllFilesBtn_Click(object sender, EventArgs e)
+        {
+            if (PathToDirectory.Count > 0)
+            {
+                ClearCheck();
+                ActiveButton(false);
+
+
+                progressPathLbl.Text = "Происходит поиск символов";
+                progressPathLbl.Refresh();
+
+                updateProgressPath.Properties.Step = 1;
+                updateProgressPath.Properties.PercentView = true;
+                updateProgressPath.Properties.Maximum = PathToDirectoryAllFiles.Count;
+                updateProgressPath.Properties.Minimum = 0;
+
+                foreach (var item in PathToDirectoryAllFiles)
+                {
+                    if (SearchRussianCharInPath(item.Path, false))
+                        item.Check = true;
+
+                    updateProgressPath.PerformStep();
+                    updateProgressPath.Update();
+                }
+                updateProgressPath.EditValue = 0;
+
+                LoadDataAlFiles();
+
+                progressPathLbl.Text = "Символы найдены";
+                progressPathLbl.Refresh();
+                ActiveButton(true);
+
+            }
+            else
+            {
+                MessageBox.Show("Не найдено файлы в папке!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
     }
 }
